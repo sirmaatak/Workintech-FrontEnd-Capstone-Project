@@ -50,3 +50,7 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+.label-left {
+  text-align: left !important;
+  display: block;
+}
