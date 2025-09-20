@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Button, FormGroup, Label, Input, Row, Col, Form } from "reactstrap";
+import { useEffect, useState } from "react";
+import { FormGroup, Label, Input, Form } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const OrderPizza = () => {
   const ingredientsList = [
@@ -69,12 +70,7 @@ const OrderPizza = () => {
       quantity,
       total,
     };
-    alert("Sipariş Verildi: " + JSON.stringify(orderData, null, 2));
-  };
-  //siparis adeti degistikce yeni toplam hesaplanir
-  const handleQuantityChange = (newQuantity) => {
-    const validQuantity = Math.max(1, newQuantity); // 1'den küçükse 1 yap
-    setQuantity(validQuantity);
+    toast.success("Sipariş başarıyla alındı!");
   };
 
   // useEffect ile boyut,hamur secimi ve ekstra malzeme secildiginde tekrar fiyat hesapliyoruz.
@@ -115,9 +111,20 @@ const OrderPizza = () => {
       {/* İçerik */}
       <div className="max-w-2xl mx-auto px-4 py-8 flex flex-wrap items-center text-center">
         {/* Başlık ve Fiyat */}
-        <div className="justify-center text-center label-left">
-          <h5 className="text-xl mt-9">Position Absolute Acı Pizza</h5>
-          <p className="mt-8">85.50₺</p>
+        <div className="justify-center text-center label-left mt-4">
+          <h5 className="text-xl font-semibold mt-7">
+            Position Absolute Acı Pizza
+          </h5>
+          <div className="grid grid-cols-3 gap-4 mt-6 ">
+            <p className="text-xl font-bold mt-9">85.50₺</p>
+            <p style={{ color: "#5F5F5F" }} className="place-self-end">
+              4.9
+            </p>
+            <p style={{ color: "#5F5F5F" }} className="place-self-end">
+              200
+            </p>
+          </div>
+
           <p className="mt-4 label-left" style={{ color: "#5F5F5F" }}>
             FrontEnd Dev olarak hala position:absolute kullaniyorsan bu cok aci
             pizza tam sana gore. Pizza, domates, peynir ve genellikle cesitli
@@ -135,9 +142,8 @@ const OrderPizza = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center text-center">
             {/* Boyut */}
             <div>
-              <label className="block text-lg font-semibold mb-2 label-left">
-                Boyut Seç *
-              </label>
+              <label className="form-label label-left">Boyut Seç *</label>
+
               <Controller
                 control={control}
                 name="size"
@@ -160,7 +166,7 @@ const OrderPizza = () => {
                       </label>
                     ))}
                     {fieldState.error && (
-                      <span className="text-red-500 text-sm">
+                      <span className="error-text">
                         {fieldState.error.message}
                       </span>
                     )}
@@ -171,9 +177,8 @@ const OrderPizza = () => {
 
             {/* Hamur */}
             <div>
-              <label className="block text-lg font-semibold mb-2 label-left">
-                Hamur Seç *
-              </label>
+              <label className="form-label label-left">Hamur Seç *</label>
+
               <Controller
                 control={control}
                 name="dough"
@@ -183,16 +188,13 @@ const OrderPizza = () => {
                 }}
                 render={({ field, fieldState }) => (
                   <>
-                    <select
-                      {...field}
-                      className="block w-full p-2 border border-gray-300 rounded"
-                    >
+                    <select {...field} className="form-input">
                       <option value="Hamur Kalınlığı">Hamur Kalınlığı</option>
                       <option value="İnce">İnce</option>
                       <option value="Kalın">Kalın</option>
                     </select>
                     {fieldState.error && (
-                      <span className="text-red-500 text-sm">
+                      <span className="error-text">
                         {fieldState.error.message}
                       </span>
                     )}
@@ -202,80 +204,75 @@ const OrderPizza = () => {
             </div>
           </div>
 
-          {/* Ek Malzemeler */}
+          {/* Ek Malzemeler (tek Controller) */}
           <div>
-            <p className="text-lg font-semibold label-left">Ek Malzemeler</p>
-            <p className="text-sm label-left" style={{ color: "#5F5F5F" }}>
+            <p className="text-lg font-semibold form-label">Ek Malzemeler</p>
+            <p className="text-sm text-gray-600">
               En fazla 10 malzeme seçebilirsiniz. 5₺.
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2 justify-center ">
-              {ingredientsList.map((item) => (
-                <div
-                  key={item}
-                  className="flex items-center justify-center label-left"
-                >
-                  <Controller
-                    control={control}
-                    name="extras"
-                    rules={{
-                      validate: (value) => {
-                        if (value.length < 4) {
-                          return "En az 4 malzeme seçmelisiniz";
-                        }
-                        if (value.length > 10) {
-                          return "En fazla 10 malzeme seçebilirsiniz";
-                        }
-                        return true;
-                      },
-                    }}
-                    render={({ field }) => (
-                      <>
-                        <Input
-                          type="checkbox"
-                          value={item}
-                          checked={field.value.includes(item)}
-                          onChange={(e) => {
-                            let updatedValue = e.target.checked
-                              ? [...field.value, item]
-                              : field.value.filter((v) => v !== item);
 
-                            if (updatedValue.length <= 10) {
-                              field.onChange(updatedValue);
-                              setValue("extras", updatedValue, {
+            <Controller
+              control={control}
+              name="extras"
+              rules={{
+                validate: (value) => {
+                  if (!value || value.length < 4)
+                    return "En az 4 malzeme seçmelisiniz";
+                  if (value.length > 10)
+                    return "En fazla 10 malzeme seçebilirsiniz";
+                  return true;
+                },
+              }}
+              render={({ field, fieldState }) => (
+                <>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
+                    {ingredientsList.map((item) => {
+                      const checked = field.value?.includes(item);
+                      return (
+                        <label
+                          key={item}
+                          className="flex items-center space-x-2"
+                        >
+                          <input
+                            type="checkbox"
+                            value={item}
+                            checked={checked}
+                            onChange={(e) => {
+                              let updated = checked
+                                ? field.value.filter((v) => v !== item)
+                                : [...(field.value || []), item];
+
+                              // yeni degeri set ettik
+                              field.onChange(updated);
+                              setValue("extras", updated, {
                                 shouldValidate: true,
                               });
-                            }
-                          }}
-                          className="mr-2"
-                        />
-                        <span
-                          className="font-semibold"
-                          style={{ texcolor: "#292929" }}
-                        >
-                          {item}
-                        </span>
-                      </>
-                    )}
-                  />
-                </div>
-              ))}
-            </div>
-            {/* Hata Mesajı */}
-            {errors.extras && (
-              <p className="text-red-500 text-sm mt-3">
-                {errors.extras.message}
-              </p>
-            )}
+                            }}
+                          />
+                          <span className="font-semibold text-gray-800">
+                            {item}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+
+                  {fieldState.error && (
+                    <p className="error-text mt-3">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
           </div>
 
           {/* Ad Soyad */}
           <FormGroup>
-            <Label
-              for="name"
-              className="mt-4 block font-semibold text-lg label-left"
-            >
+            <Label for="name" className="form-label label-left">
               Ad Soyad *
             </Label>
+
             <Controller
               control={control}
               name="name"
@@ -286,10 +283,10 @@ const OrderPizza = () => {
                     {...field}
                     type="text"
                     placeholder="Adınızı ve Soyadınızı girin"
-                    className="block w-full p-2 border border-gray-300"
+                    className="form-input"
                   />
                   {fieldState.error && (
-                    <span className="text-red-500 text-sm">
+                    <span className="error-text">
                       {fieldState.error.message}
                     </span>
                   )}
@@ -300,12 +297,10 @@ const OrderPizza = () => {
 
           {/* Not */}
           <FormGroup>
-            <Label
-              for="note"
-              className="mt-4 block font-semibold text-lg label-left"
-            >
+            <Label for="note" className="form-label mt-4 label-left">
               Sipariş Notu
             </Label>
+
             <Controller
               control={control}
               name="note"
@@ -314,7 +309,7 @@ const OrderPizza = () => {
                   {...field}
                   type="textarea"
                   placeholder="Siparişinize eklemek istediğiniz bir not var mı?"
-                  className="text-center"
+                  className="form-input"
                 />
               )}
             />
@@ -333,8 +328,7 @@ const OrderPizza = () => {
                   const newQuantity = quantity - 1;
                   if (newQuantity >= 1) setQuantity(newQuantity);
                 }}
-                className="w-10 h-10 text-black font-bold rounded"
-                style={{ backgroundColor: "#FDC913" }}
+                className="btn-counter"
               >
                 −
               </button>
@@ -342,8 +336,7 @@ const OrderPizza = () => {
               <button
                 type="button"
                 onClick={() => setQuantity(quantity + 1)}
-                className="w-10 h-10 text-black font-bold rounded"
-                style={{ backgroundColor: "#FDC913" }}
+                className="btn-counter"
               >
                 +
               </button>
@@ -364,15 +357,7 @@ const OrderPizza = () => {
                 <span>Toplam:</span>
                 <span>{total.toFixed(2)}₺</span>
               </div>
-              <button
-                type="submit"
-                disabled={!isValid}
-                className={`mt-4 w-full block font-semibold py-2 px-4 rounded ${
-                  isValid
-                    ? "bg-yellow-400 text-black hover:bg-yellow-500"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
-              >
+              <button type="submit" disabled={!isValid} className="btn-primary">
                 Sipariş Ver
               </button>
             </div>

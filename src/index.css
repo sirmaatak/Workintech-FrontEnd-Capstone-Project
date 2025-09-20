@@ -1,56 +1,39 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #213547;
-  background-color: #ffffff;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #747bff;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
 .label-left {
   text-align: left !important;
   display: block;
+}
+
+@layer components {
+  .form-label {
+    @apply block text-lg font-semibold my-4 text-left;
+  }
+  .form-input {
+    @apply block w-full p-2 border border-gray-300 rounded;
+  }
+  .error-text {
+    @apply text-red-500 text-sm mt-10;
+  }
+  /* index.css */
+
+.btn-primary {
+  @apply w-full font-semibold py-2 px-4 rounded-lg 
+         bg-yellow-400 text-black 
+         hover:bg-yellow-500 
+         disabled:bg-gray-300 disabled:text-gray-500;
+}
+
+.btn-counter {
+  @apply w-10 h-10 text-black font-bold rounded-lg 
+         bg-yellow-400 hover:bg-yellow-500 
+         flex items-center justify-center;
+}
+
+  .section-title {
+    @apply text-lg font-semibold text-left;
+  }
 }
