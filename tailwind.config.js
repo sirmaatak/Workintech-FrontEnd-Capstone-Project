@@ -11,6 +11,7 @@ export default {
     extend: {
       colors: {
         softGray: "#5F5F5F",
+        myYellow: "#FDC913"
       },
     },
   },

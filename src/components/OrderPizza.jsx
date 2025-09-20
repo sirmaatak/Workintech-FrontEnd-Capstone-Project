@@ -3,7 +3,7 @@ import { FormGroup, Label, Input, Form } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import logo from "../assets/logo.svg";
 const OrderPizza = () => {
   const ingredientsList = [
     "Pepperoni",
@@ -83,9 +83,7 @@ const OrderPizza = () => {
       {/* Header */}
       <header className="w-screen bg-red-600 shadow-md">
         <div className="py-6">
-          <h1 className="text-center text-white text-3xl font-bold">
-            Teknolojik Yemekler
-          </h1>
+          <img src={logo} alt="Teknolojik Yemekler" className="h-12 mx-auto" />
         </div>
         <div className="pb-4">
           <nav className="flex justify-center">
@@ -328,7 +326,7 @@ const OrderPizza = () => {
                   const newQuantity = quantity - 1;
                   if (newQuantity >= 1) setQuantity(newQuantity);
                 }}
-                className="btn-counter"
+                className="btn btn-counter"
               >
                 −
               </button>
@@ -336,7 +334,7 @@ const OrderPizza = () => {
               <button
                 type="button"
                 onClick={() => setQuantity(quantity + 1)}
-                className="btn-counter"
+                className="btn btn-counter"
               >
                 +
               </button>
@@ -357,7 +355,11 @@ const OrderPizza = () => {
                 <span>Toplam:</span>
                 <span>{total.toFixed(2)}₺</span>
               </div>
-              <button type="submit" disabled={!isValid} className="btn-primary">
+              <button
+                type="submit"
+                disabled={!isValid}
+                className="btn btn-primary"
+              >
                 Sipariş Ver
               </button>
             </div>

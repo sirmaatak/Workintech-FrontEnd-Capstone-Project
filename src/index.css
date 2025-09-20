@@ -19,17 +19,19 @@
     @apply text-red-500 text-sm mt-10;
   }
   /* index.css */
+.btn{
+  @apply bg-[#FDC913] text-black;
+}
 
 .btn-primary {
   @apply w-full font-semibold py-2 px-4 rounded-lg 
-         bg-yellow-400 text-black 
          hover:bg-yellow-500 
          disabled:bg-gray-300 disabled:text-gray-500;
 }
 
 .btn-counter {
-  @apply w-10 h-10 text-black font-bold rounded-lg 
-         bg-yellow-400 hover:bg-yellow-500 
+  @apply w-10 h-10 font-bold rounded-lg 
+          hover:bg-yellow-500 
          flex items-center justify-center;
 }
 
